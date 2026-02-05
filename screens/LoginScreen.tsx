@@ -1,0 +1,200 @@
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { TransformersLogo } from '../components/TransformersLogo';
+
+export default function LoginScreen() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleLogin = () => {
+    // MVP: skip real auth, navigate to task list
+    console.log('Login pressed', { email, password });
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Logo section */}
+          <View style={styles.logoSection}>
+            <TransformersLogo width={120} height={83} color="#FFFFFF" />
+            <Text style={styles.subtitle}>
+              Введіть облікові дані співробітника
+            </Text>
+          </View>
+
+          {/* Form section */}
+          <View style={styles.formSection}>
+            {/* Email field */}
+            <View style={styles.fieldGroup}>
+              <Text style={styles.label}>ID АБО EMAIL</Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="user@transformers.com.ua"
+                  placeholderTextColor="#666666"
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+              </View>
+            </View>
+
+            {/* Password field */}
+            <View style={styles.fieldGroup}>
+              <Text style={styles.label}>ПАРОЛЬ</Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={[styles.input, styles.passwordInput]}
+                  placeholder="••••••••"
+                  placeholderTextColor="#666666"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                />
+                <TouchableOpacity
+                  style={styles.eyeButton}
+                  onPress={() => setShowPassword(!showPassword)}
+                  hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+                >
+                  <Ionicons
+                    name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                    size={22}
+                    color="#888888"
+                  />
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity style={styles.forgotButton}>
+                <Text style={styles.forgotText}>Забули пароль?</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Spacer to push button toward bottom */}
+          <View style={styles.spacer} />
+
+          {/* Login button */}
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={handleLogin}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.loginButtonText}>УВІЙТИ В СИСТЕМУ</Text>
+            <Ionicons name="arrow-forward" size={20} color="#0A0A0A" />
+          </TouchableOpacity>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#0A0A0A',
+  },
+  flex: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: 28,
+    paddingBottom: 40,
+  },
+  // Logo
+  logoSection: {
+    alignItems: 'center',
+    marginTop: 60,
+    marginBottom: 40,
+  },
+  subtitle: {
+    color: '#6B8AAF',
+    fontSize: 16,
+    marginTop: 24,
+    textAlign: 'center',
+  },
+  // Form
+  formSection: {
+    gap: 24,
+  },
+  fieldGroup: {
+    gap: 8,
+  },
+  label: {
+    color: '#AAAAAA',
+    fontSize: 12,
+    fontWeight: '600',
+    letterSpacing: 1.5,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#333333',
+  },
+  input: {
+    flex: 1,
+    color: '#FFFFFF',
+    fontSize: 16,
+    paddingVertical: 14,
+  },
+  passwordInput: {
+    paddingRight: 48,
+  },
+  eyeButton: {
+    position: 'absolute',
+    right: 0,
+    padding: 12,
+  },
+  forgotButton: {
+    alignSelf: 'flex-end',
+    marginTop: 4,
+  },
+  forgotText: {
+    color: '#888888',
+    fontSize: 14,
+  },
+  // Spacer
+  spacer: {
+    flex: 1,
+    minHeight: 60,
+  },
+  // Button
+  loginButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 30,
+    paddingVertical: 18,
+    gap: 10,
+    minHeight: 60,
+  },
+  loginButtonText: {
+    color: '#0A0A0A',
+    fontSize: 16,
+    fontWeight: '700',
+    letterSpacing: 1,
+  },
+});
