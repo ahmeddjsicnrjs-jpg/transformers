@@ -57,10 +57,6 @@ export default function HomeScreen({
             <Text style={styles.statValue}>4/5</Text>
             <Text style={styles.statLabel}>ЗАВДАНЬ</Text>
           </View>
-          <View style={styles.statBox}>
-            <Text style={styles.statValue}>98%</Text>
-            <Text style={styles.statLabel}>ЕФЕКТИВНІСТЬ</Text>
-          </View>
         </View>
 
         {/* Tasks Card */}
