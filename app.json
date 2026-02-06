@@ -21,7 +21,8 @@
       "package": "com.transformers.app"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-asset"
     ]
   }
 }
