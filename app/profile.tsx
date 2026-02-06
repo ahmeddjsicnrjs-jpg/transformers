@@ -29,8 +29,8 @@ export default function ProfileScreen() {
   const router = useRouter();
   const userName = userStore.getUser() || 'Користувач';
 
-  const handleLogout = () => {
-    userStore.clear();
+  const handleLogout = async () => {
+    await userStore.clear();
     router.replace('/');
   };
 

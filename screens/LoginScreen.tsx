@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -21,9 +21,17 @@ export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
-  const handleLogin = () => {
+  useEffect(() => {
+    userStore.loadUser().then((savedEmail) => {
+      if (savedEmail) {
+        setEmail(savedEmail);
+      }
+    });
+  }, []);
+
+  const handleLogin = async () => {
     // MVP: skip real auth, save entered email/name and navigate to home
-    userStore.setUser(email || 'Мельник Володимир');
+    await userStore.setUser(email);
     router.push('/home');
   };
 
