@@ -20,7 +20,6 @@ interface HomeScreenProps {
 export default function HomeScreen({
   onNavigateToTasks,
   onNavigateToProfile,
-  userName = 'Мельник Володимир',
 }: HomeScreenProps) {
   const [elapsedSeconds, setElapsedSeconds] = useState(31320); // 8h 42m in seconds
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -51,7 +50,6 @@ export default function HomeScreen({
         <View style={styles.header}>
           <View style={styles.headerLeft}>
             <TransformersLogo width={32} height={22} color="#FFFFFF" />
-            <Text style={styles.headerTitle}>ТРАНСФОРМЕР</Text>
           </View>
           <View style={styles.headerRight}>
             <View style={styles.ratingContainer}>
