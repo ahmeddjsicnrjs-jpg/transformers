@@ -20,7 +20,6 @@ interface HomeScreenProps {
 export default function HomeScreen({
   onNavigateToTasks,
   onNavigateToProfile,
-  userName = 'Мельник Володимир',
 }: HomeScreenProps) {
   const [activeTab, setActiveTab] = useState<'home' | 'tasks' | 'profile'>('home');
   const [elapsedSeconds, setElapsedSeconds] = useState(31320); // 8h 42m in seconds
