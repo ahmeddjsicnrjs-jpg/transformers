@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
-  Image,
-  Switch,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
@@ -11,25 +9,30 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { userStore } from '../services/userStore';
 
 interface MenuItem {
   id: string;
   label: string;
   icon: keyof typeof Ionicons.glyphMap;
-  type: 'chevron' | 'switch';
 }
 
 const MENU_ITEMS: MenuItem[] = [
-  { id: 'saved', label: 'Збережені повідомлення', icon: 'bookmark-outline', type: 'switch' },
-  { id: 'settings', label: 'Налаштування', icon: 'settings-outline', type: 'chevron' },
-  { id: 'payments', label: 'Методи оплати', icon: 'card-outline', type: 'chevron' },
+  { id: 'personal', label: 'Особисті дані', icon: 'person-outline' },
+  { id: 'achievements', label: 'Досягнення', icon: 'trophy-outline' },
+  { id: 'finance', label: 'Фінанси та виплати', icon: 'wallet-outline' },
+  { id: 'notifications', label: 'Сповіщення', icon: 'notifications-outline' },
+  { id: 'settings', label: 'Налаштування', icon: 'settings-outline' },
 ];
-
-const AVATAR_URL = 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=200&fit=crop&crop=face';
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const [savedEnabled, setSavedEnabled] = useState(false);
+  const userName = userStore.getUser() || 'Користувач';
+
+  const handleLogout = () => {
+    userStore.clear();
+    router.replace('/');
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
@@ -53,14 +56,15 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Avatar & User Info */}
+        {/* Avatar icon */}
         <View style={styles.userSection}>
           <View style={styles.avatarContainer}>
-            <Image source={{ uri: AVATAR_URL }} style={styles.avatar} />
+            <View style={styles.avatar}>
+              <Ionicons name="person-outline" size={40} color="#AAAAAA" />
+            </View>
             <View style={styles.onlineIndicator} />
           </View>
-          <Text style={styles.userName}>Мельник Володимир</Text>
-          <Text style={styles.userRole}>Оператор верстату</Text>
+          <Text style={styles.userName}>{userName}</Text>
         </View>
 
         {/* Stats */}
@@ -81,27 +85,26 @@ export default function ProfileScreen() {
             <TouchableOpacity
               key={item.id}
               style={styles.menuItem}
-              activeOpacity={item.type === 'switch' ? 1 : 0.7}
+              activeOpacity={0.7}
             >
               <View style={styles.menuItemLeft}>
-                <View style={styles.menuIconContainer}>
-                  <Ionicons name={item.icon} size={22} color="#FFFFFF" />
-                </View>
+                <Ionicons name={item.icon} size={22} color="#FFFFFF" />
                 <Text style={styles.menuItemLabel}>{item.label}</Text>
               </View>
-              {item.type === 'switch' ? (
-                <Switch
-                  value={savedEnabled}
-                  onValueChange={setSavedEnabled}
-                  trackColor={{ false: '#333333', true: '#4CAF50' }}
-                  thumbColor="#FFFFFF"
-                />
-              ) : (
-                <Ionicons name="chevron-forward" size={20} color="#888888" />
-              )}
+              <Ionicons name="chevron-forward" size={20} color="#888888" />
             </TouchableOpacity>
           ))}
         </View>
+
+        {/* Logout */}
+        <TouchableOpacity
+          style={styles.logoutButton}
+          activeOpacity={0.7}
+          onPress={handleLogout}
+        >
+          <Ionicons name="log-out-outline" size={22} color="#E3000F" />
+          <Text style={styles.logoutText}>Вийти з системи</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -151,10 +154,12 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   avatar: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
+    width: 88,
+    height: 88,
+    borderRadius: 44,
     backgroundColor: '#1A1A1A',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   onlineIndicator: {
     position: 'absolute',
@@ -172,12 +177,6 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '700',
     textAlign: 'center',
-  },
-  userRole: {
-    color: '#888888',
-    fontSize: 14,
-    fontWeight: '400',
-    marginTop: 4,
   },
 
   // Stats
@@ -208,37 +207,44 @@ const styles = StyleSheet.create({
 
   // Menu
   menuSection: {
-    backgroundColor: '#1A1A1A',
-    borderRadius: 16,
-    overflow: 'hidden',
+    marginBottom: 20,
   },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    minHeight: 56,
+    paddingVertical: 16,
+    paddingHorizontal: 4,
     borderBottomWidth: 1,
-    borderBottomColor: '#2A2A2A',
+    borderBottomColor: '#1A1A1A',
+    minHeight: 56,
   },
   menuItemLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
-    flex: 1,
-  },
-  menuIconContainer: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    backgroundColor: '#2A2A2A',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   menuItemLabel: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '500',
+  },
+
+  // Logout
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    backgroundColor: '#1A1A1A',
+    borderRadius: 12,
+    paddingVertical: 16,
+    minHeight: 56,
+    marginTop: 4,
+  },
+  logoutText: {
+    color: '#E3000F',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

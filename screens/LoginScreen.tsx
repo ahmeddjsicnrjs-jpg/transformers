@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { TransformersLogo } from '../components/TransformersLogo';
+import { userStore } from '../services/userStore';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -21,7 +22,8 @@ export default function LoginScreen() {
   const router = useRouter();
 
   const handleLogin = () => {
-    // MVP: skip real auth, navigate to home screen
+    // MVP: skip real auth, save entered email/name and navigate to home
+    userStore.setUser(email || 'Мельник Володимир');
     router.push('/home');
   };
 
