@@ -192,8 +192,12 @@ export default function TasksScreen() {
           <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>ВИРОБНИЧИЙ ПЛАН</Text>
-        <TouchableOpacity style={styles.headerButton} activeOpacity={0.7}>
-          <Ionicons name="add" size={26} color="#FFFFFF" />
+        <TouchableOpacity
+          style={styles.headerButton}
+          activeOpacity={0.7}
+          onPress={() => router.push('/profile' as any)}
+        >
+          <Ionicons name="person-circle-outline" size={28} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
 
@@ -259,31 +263,6 @@ export default function TasksScreen() {
         }
       />
 
-      {/* Bottom Tab Bar */}
-      <View style={styles.tabBar}>
-        <TouchableOpacity
-          style={styles.tabItem}
-          onPress={() => router.push('/home' as any)}
-          activeOpacity={0.7}
-        >
-          <Ionicons name="home-outline" size={24} color="#888888" />
-          <Text style={styles.tabLabel}>Головна</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.tabItem} activeOpacity={0.7}>
-          <Ionicons name="list" size={24} color="#4CAF50" />
-          <Text style={[styles.tabLabel, styles.tabLabelActive]}>Завдання</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.tabItem}
-          onPress={() => router.push('/profile' as any)}
-          activeOpacity={0.7}
-        >
-          <Ionicons name="person-outline" size={24} color="#888888" />
-          <Text style={styles.tabLabel}>Профіль</Text>
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 }
@@ -476,29 +455,4 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 
-  // Bottom Tab Bar
-  tabBar: {
-    flexDirection: 'row',
-    backgroundColor: '#0A0A0A',
-    borderTopWidth: 1,
-    borderTopColor: '#1A1A1A',
-    paddingBottom: 20,
-    paddingTop: 10,
-  },
-  tabItem: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 6,
-    minHeight: 48,
-  },
-  tabLabel: {
-    color: '#888888',
-    fontSize: 11,
-    fontWeight: '500',
-    marginTop: 4,
-  },
-  tabLabelActive: {
-    color: '#4CAF50',
-  },
 });

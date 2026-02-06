@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -22,7 +22,6 @@ export default function HomeScreen({
   onNavigateToProfile,
   userName = 'Мельник Володимир',
 }: HomeScreenProps) {
-  const [activeTab, setActiveTab] = useState<'home' | 'tasks' | 'profile'>('home');
   const [elapsedSeconds, setElapsedSeconds] = useState(31320); // 8h 42m in seconds
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -39,15 +38,6 @@ export default function HomeScreen({
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-  };
-
-  const handleTabPress = (tab: 'home' | 'tasks' | 'profile') => {
-    setActiveTab(tab);
-    if (tab === 'tasks' && onNavigateToTasks) {
-      onNavigateToTasks();
-    } else if (tab === 'profile' && onNavigateToProfile) {
-      onNavigateToProfile();
-    }
   };
 
   return (
@@ -70,6 +60,13 @@ export default function HomeScreen({
             </View>
             <TouchableOpacity style={styles.bellButton} activeOpacity={0.7}>
               <Ionicons name="notifications-outline" size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.profileButton}
+              activeOpacity={0.7}
+              onPress={onNavigateToProfile}
+            >
+              <Ionicons name="person-circle-outline" size={28} color="#FFFFFF" />
             </TouchableOpacity>
           </View>
         </View>
@@ -115,68 +112,6 @@ export default function HomeScreen({
         </TouchableOpacity>
       </ScrollView>
 
-      {/* Bottom Tab Bar */}
-      <View style={styles.tabBar}>
-        <TouchableOpacity
-          style={styles.tabItem}
-          onPress={() => handleTabPress('home')}
-          activeOpacity={0.7}
-        >
-          <Ionicons
-            name={activeTab === 'home' ? 'home' : 'home-outline'}
-            size={24}
-            color={activeTab === 'home' ? '#4CAF50' : '#888888'}
-          />
-          <Text
-            style={[
-              styles.tabLabel,
-              activeTab === 'home' && styles.tabLabelActive,
-            ]}
-          >
-            Головна
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.tabItem}
-          onPress={() => handleTabPress('tasks')}
-          activeOpacity={0.7}
-        >
-          <Ionicons
-            name={activeTab === 'tasks' ? 'list' : 'list-outline'}
-            size={24}
-            color={activeTab === 'tasks' ? '#4CAF50' : '#888888'}
-          />
-          <Text
-            style={[
-              styles.tabLabel,
-              activeTab === 'tasks' && styles.tabLabelActive,
-            ]}
-          >
-            Завдання
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.tabItem}
-          onPress={() => handleTabPress('profile')}
-          activeOpacity={0.7}
-        >
-          <Ionicons
-            name={activeTab === 'profile' ? 'person' : 'person-outline'}
-            size={24}
-            color={activeTab === 'profile' ? '#4CAF50' : '#888888'}
-          />
-          <Text
-            style={[
-              styles.tabLabel,
-              activeTab === 'profile' && styles.tabLabelActive,
-            ]}
-          >
-            Профіль
-          </Text>
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 }
@@ -327,29 +262,12 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 
-  // Bottom Tab Bar
-  tabBar: {
-    flexDirection: 'row',
-    backgroundColor: '#0A0A0A',
-    borderTopWidth: 1,
-    borderTopColor: '#1A1A1A',
-    paddingBottom: 20,
-    paddingTop: 10,
-  },
-  tabItem: {
-    flex: 1,
+  // Profile Button
+  profileButton: {
+    padding: 4,
+    minWidth: 48,
+    minHeight: 48,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 6,
-    minHeight: 48,
-  },
-  tabLabel: {
-    color: '#888888',
-    fontSize: 11,
-    fontWeight: '500',
-    marginTop: 4,
-  },
-  tabLabelActive: {
-    color: '#4CAF50',
   },
 });
