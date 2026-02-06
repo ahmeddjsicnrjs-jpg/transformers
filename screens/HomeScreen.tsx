@@ -1,0 +1,355 @@
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { TransformersLogo } from '../components/TransformersLogo';
+
+interface HomeScreenProps {
+  onNavigateToTasks?: () => void;
+  onNavigateToProfile?: () => void;
+  userName?: string;
+}
+
+export default function HomeScreen({
+  onNavigateToTasks,
+  onNavigateToProfile,
+  userName = 'Мельник Володимир',
+}: HomeScreenProps) {
+  const [activeTab, setActiveTab] = useState<'home' | 'tasks' | 'profile'>('home');
+  const [elapsedSeconds, setElapsedSeconds] = useState(31320); // 8h 42m in seconds
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    timerRef.current = setInterval(() => {
+      setElapsedSeconds((prev) => prev + 1);
+    }, 1000);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, []);
+
+  const formatTime = (totalSeconds: number): string => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  };
+
+  const handleTabPress = (tab: 'home' | 'tasks' | 'profile') => {
+    setActiveTab(tab);
+    if (tab === 'tasks' && onNavigateToTasks) {
+      onNavigateToTasks();
+    } else if (tab === 'profile' && onNavigateToProfile) {
+      onNavigateToProfile();
+    }
+  };
+
+  return (
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.headerLeft}>
+            <TransformersLogo width={32} height={22} color="#FFFFFF" />
+            <Text style={styles.headerTitle}>ТРАНСФОРМЕР</Text>
+          </View>
+          <View style={styles.headerRight}>
+            <View style={styles.ratingContainer}>
+              <Text style={styles.ratingLabel}>Рейтинг</Text>
+              <Text style={styles.ratingValue}>1250</Text>
+            </View>
+            <TouchableOpacity style={styles.bellButton} activeOpacity={0.7}>
+              <Ionicons name="notifications-outline" size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Active Shift Card */}
+        <View style={styles.shiftCard}>
+          {/* Dark overlay background for the card */}
+          <View style={styles.shiftCardOverlay} />
+          <View style={styles.shiftCardContent}>
+            <View style={styles.shiftHeader}>
+              <Ionicons name="shield-checkmark-outline" size={20} color="#FFFFFF" />
+              <Text style={styles.shiftTitle}>АКТИВНА ЗМІНА</Text>
+            </View>
+            <Text style={styles.timerText}>{formatTime(elapsedSeconds)}</Text>
+            <Text style={styles.timerSubtitle}>Час на лінії</Text>
+
+            <View style={styles.statsRow}>
+              <View style={styles.statBox}>
+                <Text style={styles.statValue}>4/5</Text>
+                <Text style={styles.statLabel}>ЗАВДАНЬ</Text>
+              </View>
+              <View style={styles.statBox}>
+                <Text style={styles.statValue}>98%</Text>
+                <Text style={styles.statLabel}>ЕФЕКТИВНІСТЬ</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        {/* Tasks Card */}
+        <TouchableOpacity
+          style={styles.tasksCard}
+          activeOpacity={0.8}
+          onPress={onNavigateToTasks}
+        >
+          <MaterialCommunityIcons
+            name="chart-line-variant"
+            size={28}
+            color="#FFFFFF"
+          />
+          <Text style={styles.tasksCardTitle}>Завдання</Text>
+          <Text style={styles.tasksCardLink}>Переглянути список</Text>
+        </TouchableOpacity>
+      </ScrollView>
+
+      {/* Bottom Tab Bar */}
+      <View style={styles.tabBar}>
+        <TouchableOpacity
+          style={styles.tabItem}
+          onPress={() => handleTabPress('home')}
+          activeOpacity={0.7}
+        >
+          <Ionicons
+            name={activeTab === 'home' ? 'home' : 'home-outline'}
+            size={24}
+            color={activeTab === 'home' ? '#4CAF50' : '#888888'}
+          />
+          <Text
+            style={[
+              styles.tabLabel,
+              activeTab === 'home' && styles.tabLabelActive,
+            ]}
+          >
+            Головна
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.tabItem}
+          onPress={() => handleTabPress('tasks')}
+          activeOpacity={0.7}
+        >
+          <Ionicons
+            name={activeTab === 'tasks' ? 'list' : 'list-outline'}
+            size={24}
+            color={activeTab === 'tasks' ? '#4CAF50' : '#888888'}
+          />
+          <Text
+            style={[
+              styles.tabLabel,
+              activeTab === 'tasks' && styles.tabLabelActive,
+            ]}
+          >
+            Завдання
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.tabItem}
+          onPress={() => handleTabPress('profile')}
+          activeOpacity={0.7}
+        >
+          <Ionicons
+            name={activeTab === 'profile' ? 'person' : 'person-outline'}
+            size={24}
+            color={activeTab === 'profile' ? '#4CAF50' : '#888888'}
+          />
+          <Text
+            style={[
+              styles.tabLabel,
+              activeTab === 'profile' && styles.tabLabelActive,
+            ]}
+          >
+            Профіль
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#0A0A0A',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 24,
+  },
+
+  // Header
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 16,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  headerTitle: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 1.5,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  ratingContainer: {
+    alignItems: 'flex-end',
+  },
+  ratingLabel: {
+    color: '#AAAAAA',
+    fontSize: 12,
+    fontWeight: '400',
+  },
+  ratingValue: {
+    color: '#4CAF50',
+    fontSize: 20,
+    fontWeight: '800',
+  },
+  bellButton: {
+    padding: 4,
+    minWidth: 48,
+    minHeight: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  // Active Shift Card
+  shiftCard: {
+    backgroundColor: '#1A1A1A',
+    borderRadius: 16,
+    marginTop: 8,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  shiftCardOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(20, 20, 20, 0.85)',
+  },
+  shiftCardContent: {
+    padding: 20,
+  },
+  shiftHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
+  shiftTitle: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '700',
+    letterSpacing: 1,
+  },
+  timerText: {
+    color: '#FFFFFF',
+    fontSize: 48,
+    fontWeight: '800',
+    marginBottom: 4,
+  },
+  timerSubtitle: {
+    color: '#888888',
+    fontSize: 14,
+    fontWeight: '400',
+    marginBottom: 20,
+    textDecorationLine: 'underline',
+    textDecorationColor: '#888888',
+  },
+  statsRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  statBox: {
+    borderWidth: 1,
+    borderColor: '#333333',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    minWidth: 90,
+  },
+  statValue: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  statLabel: {
+    color: '#AAAAAA',
+    fontSize: 10,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+    marginTop: 2,
+  },
+
+  // Tasks Card
+  tasksCard: {
+    backgroundColor: '#1A1A1A',
+    borderRadius: 16,
+    marginTop: 16,
+    padding: 20,
+  },
+  tasksCardTitle: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: '700',
+    marginTop: 12,
+  },
+  tasksCardLink: {
+    color: '#4CAF50',
+    fontSize: 14,
+    fontWeight: '500',
+    marginTop: 4,
+  },
+
+  // Bottom Tab Bar
+  tabBar: {
+    flexDirection: 'row',
+    backgroundColor: '#0A0A0A',
+    borderTopWidth: 1,
+    borderTopColor: '#1A1A1A',
+    paddingBottom: 20,
+    paddingTop: 10,
+  },
+  tabItem: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 6,
+    minHeight: 48,
+  },
+  tabLabel: {
+    color: '#888888',
+    fontSize: 11,
+    fontWeight: '500',
+    marginTop: 4,
+  },
+  tabLabelActive: {
+    color: '#4CAF50',
+  },
+});
