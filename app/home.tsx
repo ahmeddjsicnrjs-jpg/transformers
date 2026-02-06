@@ -10,7 +10,7 @@ export default function HomeRoute() {
         router.push('/tasks');
       }}
       onNavigateToProfile={() => {
-        router.replace('/profile');
+        router.push('/profile');
       }}
     />
   );
