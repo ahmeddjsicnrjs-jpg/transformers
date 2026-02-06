@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "Transformers",
+    "slug": "transformers-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "scheme": "transformers",
+    "splash": {
+      "backgroundColor": "#0A0A0A"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.transformers.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0A0A0A"
+      },
+      "package": "com.transformers.app"
+    },
+    "plugins": [
+      "expo-router"
+    ]
+  }
+}
