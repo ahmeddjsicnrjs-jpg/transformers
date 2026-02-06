@@ -7,8 +7,7 @@ export default function HomeRoute() {
   return (
     <HomeScreen
       onNavigateToTasks={() => {
-        // TODO: navigate to /tasks when TaskListScreen is implemented
-        console.log('Navigate to tasks');
+        router.push('/tasks');
       }}
       onNavigateToProfile={() => {
         router.replace('/profile');
