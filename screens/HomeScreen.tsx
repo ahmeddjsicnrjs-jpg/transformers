@@ -51,6 +51,18 @@ export default function HomeScreen({
           </View>
         </View>
 
+        {/* Stats Row */}
+        <View style={styles.statsRow}>
+          <View style={styles.statBox}>
+            <Text style={styles.statValue}>4/5</Text>
+            <Text style={styles.statLabel}>ЗАВДАНЬ</Text>
+          </View>
+          <View style={styles.statBox}>
+            <Text style={styles.statValue}>98%</Text>
+            <Text style={styles.statLabel}>ЕФЕКТИВНІСТЬ</Text>
+          </View>
+        </View>
+
         {/* Tasks Card */}
         <TouchableOpacity
           style={styles.tasksCard}
@@ -128,6 +140,35 @@ const styles = StyleSheet.create({
     minHeight: 48,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+
+  // Stats Row
+  statsRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 8,
+  },
+  statBox: {
+    flex: 1,
+    backgroundColor: '#1A1A1A',
+    borderWidth: 1,
+    borderColor: '#333333',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  statValue: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  statLabel: {
+    color: '#AAAAAA',
+    fontSize: 10,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+    marginTop: 2,
   },
 
   // Tasks Card
