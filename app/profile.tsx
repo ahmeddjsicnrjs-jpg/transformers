@@ -48,7 +48,7 @@ export default function ProfileScreen() {
             onPress={() => router.back()}
             activeOpacity={0.7}
           >
-            <Ionicons name="chevron-back" size={24} color="#FFFFFF" />
+            <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>ПРОФІЛЬ</Text>
           <TouchableOpacity style={styles.headerButton} activeOpacity={0.7}>
