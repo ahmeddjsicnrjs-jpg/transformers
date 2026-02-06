@@ -11,16 +11,18 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { TransformersLogo } from '../components/TransformersLogo';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   const handleLogin = () => {
-    // MVP: skip real auth, navigate to task list
-    console.log('Login pressed', { email, password });
+    // MVP: skip real auth, navigate to home screen
+    router.push('/home');
   };
 
   return (
