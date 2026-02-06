@@ -12,8 +12,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { Task } from '../data/mockTasks';
-import { fetchTasks } from '../services/mockApi';
+import { Task } from '../../data/mockTasks';
+import { fetchTasks } from '../../services/mockApi';
 
 const STATUS_COLORS: Record<Task['status'], string> = {
   done: '#4CAF50',
