@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -21,24 +21,6 @@ export default function HomeScreen({
   onNavigateToTasks,
   onNavigateToProfile,
 }: HomeScreenProps) {
-  const [elapsedSeconds, setElapsedSeconds] = useState(31320); // 8h 42m in seconds
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(() => {
-    timerRef.current = setInterval(() => {
-      setElapsedSeconds((prev) => prev + 1);
-    }, 1000);
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, []);
-
-  const formatTime = (totalSeconds: number): string => {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-  };
-
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <ScrollView
@@ -66,31 +48,6 @@ export default function HomeScreen({
             >
               <Ionicons name="person-circle-outline" size={28} color="#FFFFFF" />
             </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Active Shift Card */}
-        <View style={styles.shiftCard}>
-          {/* Dark overlay background for the card */}
-          <View style={styles.shiftCardOverlay} />
-          <View style={styles.shiftCardContent}>
-            <View style={styles.shiftHeader}>
-              <Ionicons name="shield-checkmark-outline" size={20} color="#FFFFFF" />
-              <Text style={styles.shiftTitle}>АКТИВНА ЗМІНА</Text>
-            </View>
-            <Text style={styles.timerText}>{formatTime(elapsedSeconds)}</Text>
-            <Text style={styles.timerSubtitle}>Час на лінії</Text>
-
-            <View style={styles.statsRow}>
-              <View style={styles.statBox}>
-                <Text style={styles.statValue}>4/5</Text>
-                <Text style={styles.statLabel}>ЗАВДАНЬ</Text>
-              </View>
-              <View style={styles.statBox}>
-                <Text style={styles.statValue}>98%</Text>
-                <Text style={styles.statLabel}>ЕФЕКТИВНІСТЬ</Text>
-              </View>
-            </View>
           </View>
         </View>
 
@@ -171,73 +128,6 @@ const styles = StyleSheet.create({
     minHeight: 48,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-
-  // Active Shift Card
-  shiftCard: {
-    backgroundColor: '#1A1A1A',
-    borderRadius: 16,
-    marginTop: 8,
-    overflow: 'hidden',
-    position: 'relative',
-  },
-  shiftCardOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(20, 20, 20, 0.85)',
-  },
-  shiftCardContent: {
-    padding: 20,
-  },
-  shiftHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 12,
-  },
-  shiftTitle: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '700',
-    letterSpacing: 1,
-  },
-  timerText: {
-    color: '#FFFFFF',
-    fontSize: 48,
-    fontWeight: '800',
-    marginBottom: 4,
-  },
-  timerSubtitle: {
-    color: '#888888',
-    fontSize: 14,
-    fontWeight: '400',
-    marginBottom: 20,
-    textDecorationLine: 'underline',
-    textDecorationColor: '#888888',
-  },
-  statsRow: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  statBox: {
-    borderWidth: 1,
-    borderColor: '#333333',
-    borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    alignItems: 'center',
-    minWidth: 90,
-  },
-  statValue: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  statLabel: {
-    color: '#AAAAAA',
-    fontSize: 10,
-    fontWeight: '600',
-    letterSpacing: 0.5,
-    marginTop: 2,
   },
 
   // Tasks Card
