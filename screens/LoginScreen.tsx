@@ -31,7 +31,7 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     // MVP: skip real auth, save entered email/name and navigate to home
-    await userStore.setUser(email || 'Мельник Володимир');
+    await userStore.setUser(email);
     router.push('/home');
   };
 
