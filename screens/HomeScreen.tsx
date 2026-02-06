@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { TransformersLogo } from '../components/TransformersLogo';
 
 interface HomeScreenProps {
   onNavigateToTasks?: () => void;
@@ -58,7 +59,9 @@ export default function HomeScreen({
       >
         {/* Header */}
         <View style={styles.header}>
-          <View style={styles.headerLeft} />
+          <View style={styles.headerLeft}>
+            <TransformersLogo width={32} height={22} color="#FFFFFF" />
+          </View>
           <View style={styles.headerRight}>
             <View style={styles.ratingContainer}>
               <Text style={styles.ratingLabel}>Рейтинг</Text>
