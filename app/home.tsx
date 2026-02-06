@@ -11,8 +11,7 @@ export default function HomeRoute() {
         console.log('Navigate to tasks');
       }}
       onNavigateToProfile={() => {
-        // TODO: navigate to /profile when ProfileScreen is implemented
-        console.log('Navigate to profile');
+        router.replace('/profile');
       }}
     />
   );
