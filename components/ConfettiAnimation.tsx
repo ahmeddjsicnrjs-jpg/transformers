@@ -1,80 +1,42 @@
-import React, { useEffect, useMemo } from 'react';
-import { StyleSheet, View, Dimensions } from 'react-native';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  withDelay,
-  Easing,
-  interpolate,
-} from 'react-native-reanimated';
+import React, { useEffect, useRef, useMemo } from 'react';
+import { StyleSheet, View, Animated, Dimensions, Easing } from 'react-native';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const CONFETTI_COLORS = [
-  '#4CAF50', // green
-  '#FFD700', // gold
-  '#E3000F', // red
-  '#0057B8', // blue
-  '#FF6B35', // orange
-  '#9C27B0', // purple
-  '#00BCD4', // cyan
-  '#FF4081', // pink
+  '#4CAF50',
+  '#FFD700',
+  '#E3000F',
+  '#0057B8',
+  '#FF6B35',
+  '#9C27B0',
+  '#00BCD4',
+  '#FF4081',
 ];
 
 const CONFETTI_COUNT = 40;
-const ANIMATION_DURATION = 2500;
+const DURATION = 2500;
 
-interface ConfettiPieceProps {
-  index: number;
-  trigger: Animated.SharedValue<number>;
+interface PieceConfig {
+  startX: number;
+  drift: number;
+  rotation: number;
+  delay: number;
+  size: number;
+  isRect: boolean;
+  color: string;
 }
 
-function ConfettiPiece({ index, trigger }: ConfettiPieceProps) {
-  const config = useMemo(() => {
-    const startX = Math.random() * SCREEN_WIDTH;
-    const drift = (Math.random() - 0.5) * SCREEN_WIDTH * 0.6;
-    const rotation = (Math.random() - 0.5) * 720;
-    const delay = Math.random() * 400;
-    const size = 6 + Math.random() * 6;
-    const isRect = Math.random() > 0.5;
-    const color = CONFETTI_COLORS[index % CONFETTI_COLORS.length];
-    return { startX, drift, rotation, delay, size, isRect, color };
-  }, [index]);
-
-  const animatedStyle = useAnimatedStyle(() => {
-    const progress = trigger.value;
-    const y = interpolate(progress, [0, 1], [-20, SCREEN_HEIGHT + 40]);
-    const x = config.startX + config.drift * progress;
-    const rotate = config.rotation * progress;
-    const opacity = interpolate(progress, [0, 0.1, 0.75, 1], [0, 1, 1, 0]);
-    const scale = interpolate(progress, [0, 0.2, 0.8, 1], [0.3, 1, 1, 0.5]);
-
-    return {
-      transform: [
-        { translateX: x },
-        { translateY: y },
-        { rotate: `${rotate}deg` },
-        { scale },
-      ],
-      opacity,
-    };
-  });
-
-  return (
-    <Animated.View
-      style={[
-        styles.piece,
-        {
-          width: config.size,
-          height: config.isRect ? config.size * 1.6 : config.size,
-          borderRadius: config.isRect ? 2 : config.size / 2,
-          backgroundColor: config.color,
-        },
-        animatedStyle,
-      ]}
-    />
-  );
+function buildConfigs(): PieceConfig[] {
+  return Array.from({ length: CONFETTI_COUNT }, (_, i) => ({
+    startX: Math.random() * SCREEN_WIDTH,
+    drift: (Math.random() - 0.5) * SCREEN_WIDTH * 0.6,
+    rotation: (Math.random() - 0.5) * 720,
+    delay: Math.random() * 400,
+    size: 6 + Math.random() * 6,
+    isRect: Math.random() > 0.5,
+    color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+  }));
 }
 
 interface ConfettiAnimationProps {
@@ -82,34 +44,68 @@ interface ConfettiAnimationProps {
 }
 
 export default function ConfettiAnimation({ active }: ConfettiAnimationProps) {
-  const trigger = useSharedValue(0);
+  const progress = useRef(new Animated.Value(0)).current;
+  const configs = useMemo(() => buildConfigs(), []);
 
   useEffect(() => {
     if (active) {
-      trigger.value = 0;
-      trigger.value = withDelay(
-        50,
-        withTiming(1, {
-          duration: ANIMATION_DURATION,
-          easing: Easing.out(Easing.quad),
-        }),
-      );
+      progress.setValue(0);
+      Animated.timing(progress, {
+        toValue: 1,
+        duration: DURATION,
+        easing: Easing.out(Easing.quad),
+        useNativeDriver: true,
+      }).start();
     }
-  }, [active, trigger]);
-
-  const pieces = useMemo(
-    () =>
-      Array.from({ length: CONFETTI_COUNT }, (_, i) => (
-        <ConfettiPiece key={i} index={i} trigger={trigger} />
-      )),
-    [trigger],
-  );
+  }, [active, progress]);
 
   if (!active) return null;
 
   return (
     <View style={styles.container} pointerEvents="none">
-      {pieces}
+      {configs.map((cfg, i) => {
+        const translateY = progress.interpolate({
+          inputRange: [0, 1],
+          outputRange: [-20, SCREEN_HEIGHT + 40],
+        });
+
+        const translateX = progress.interpolate({
+          inputRange: [0, 1],
+          outputRange: [cfg.startX, cfg.startX + cfg.drift],
+        });
+
+        const rotate = progress.interpolate({
+          inputRange: [0, 1],
+          outputRange: ['0deg', `${cfg.rotation}deg`],
+        });
+
+        const opacity = progress.interpolate({
+          inputRange: [0, 0.1, 0.75, 1],
+          outputRange: [0, 1, 1, 0],
+        });
+
+        const scale = progress.interpolate({
+          inputRange: [0, 0.2, 0.8, 1],
+          outputRange: [0.3, 1, 1, 0.5],
+        });
+
+        return (
+          <Animated.View
+            key={i}
+            style={[
+              styles.piece,
+              {
+                width: cfg.size,
+                height: cfg.isRect ? cfg.size * 1.6 : cfg.size,
+                borderRadius: cfg.isRect ? 2 : cfg.size / 2,
+                backgroundColor: cfg.color,
+                opacity,
+                transform: [{ translateX }, { translateY }, { rotate }, { scale }],
+              },
+            ]}
+          />
+        );
+      })}
     </View>
   );
 }
