@@ -17,9 +17,9 @@ import ConfettiAnimation from '../../components/ConfettiAnimation';
 import { useTheme, ThemeColors } from '../../services/theme';
 
 const STATUS_COLORS: Record<Task['status'], string> = {
-  done: '#7A8F7E',
-  in_progress: '#A09580',
-  pending: '#B0B0B0',
+  done: '#5B9A65',
+  in_progress: '#C9A340',
+  pending: '#A0A0A0',
 };
 
 const STATUS_LABELS: Record<Task['status'], string> = {
@@ -169,7 +169,7 @@ export default function TaskDetailScreen() {
             icon="cube-outline"
             label="Матеріали"
             value={task.materialReceived ? 'Отримано' : 'Не отримано'}
-            valueColor={task.materialReceived ? '#7A8F7E' : '#9B7070'}
+            valueColor={task.materialReceived ? '#5B9A65' : '#B06060'}
             colors={colors}
           />
         </View>
@@ -219,8 +219,8 @@ export default function TaskDetailScreen() {
       {task.status === 'done' && (
         <View style={[styles.bottomAction, { borderTopColor: colors.surface }]}>
           <View style={[styles.actionButton, styles.doneIndicator]}>
-            <Ionicons name="checkmark-done" size={22} color="#7A8F7E" />
-            <Text style={[styles.actionButtonText, { color: '#7A8F7E' }]}>
+            <Ionicons name="checkmark-done" size={22} color="#5B9A65" />
+            <Text style={[styles.actionButtonText, { color: '#5B9A65' }]}>
               Завдання виконано
             </Text>
           </View>
@@ -402,9 +402,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#333333',
   },
   doneIndicator: {
-    backgroundColor: 'rgba(122, 143, 126, 0.1)',
+    backgroundColor: 'rgba(91, 154, 101, 0.1)',
     borderWidth: 1,
-    borderColor: 'rgba(122, 143, 126, 0.25)',
+    borderColor: 'rgba(91, 154, 101, 0.25)',
   },
   actionButtonText: {
     color: '#FFFFFF',

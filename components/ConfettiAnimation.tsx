@@ -4,9 +4,9 @@ import { StyleSheet, View, Animated, Dimensions, Easing } from 'react-native';
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const COLORS = [
-  '#8B8B8B', '#A0A0A0', '#6B6B6B', '#999999',
-  '#7A8F7E', '#B0B0B0', '#888888', '#9B9B9B',
-  '#777777', '#AAAAAA', '#909090', '#B5B5B5',
+  '#4CAF50', '#FFD700', '#E3000F', '#0057B8',
+  '#FF6B35', '#9C27B0', '#00BCD4', '#FF4081',
+  '#8BC34A', '#FF9800', '#3F51B5', '#E91E63',
 ];
 
 const PIECE_COUNT = 55;

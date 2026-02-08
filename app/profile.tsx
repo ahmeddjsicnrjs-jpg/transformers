@@ -95,7 +95,7 @@ export default function ProfileScreen() {
           <Switch
             value={mode === 'light'}
             onValueChange={toggleTheme}
-            trackColor={{ false: '#D0D0D0', true: '#7A8F7E' }}
+            trackColor={{ false: '#D0D0D0', true: '#5B9A65' }}
             thumbColor="#FFFFFF"
           />
         </View>
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     borderRadius: 8,
-    backgroundColor: '#7A8F7E',
+    backgroundColor: '#5B9A65',
     borderWidth: 2,
   },
   userName: {

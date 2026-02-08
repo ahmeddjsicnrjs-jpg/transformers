@@ -155,7 +155,7 @@ export const userStore = {
 ### Styling Rules
 - Use `StyleSheet.create()` for all styles
 - Factory-friendly UI: large touch targets (min 48px), high contrast, readable fonts (16px+ base)
-- Status colors (muted): `pending` = `#B0B0B0` (grey), `in_progress` = `#A09580` (warm grey), `done` = `#7A8F7E` (sage)
+- Status colors (desaturated): `pending` = `#A0A0A0` (grey), `in_progress` = `#C9A340` (muted gold), `done` = `#5B9A65` (muted green)
 - Card borders: left border 4px with status color
 - Keep layouts simple: flat lists, cards, minimal nesting
 - White background (#FFFFFF), dark text (#1A1A1A), bold headings, clean spacing

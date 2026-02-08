@@ -17,9 +17,9 @@ import { fetchTasks } from '../../services/mockApi';
 import { useTheme, ThemeColors } from '../../services/theme';
 
 const STATUS_COLORS: Record<Task['status'], string> = {
-  done: '#7A8F7E',
-  in_progress: '#A09580',
-  pending: '#B0B0B0',
+  done: '#5B9A65',
+  in_progress: '#C9A340',
+  pending: '#A0A0A0',
 };
 
 const STATUS_LABELS: Record<Task['status'], string> = {
@@ -421,15 +421,15 @@ const styles = StyleSheet.create({
     textTransform: 'lowercase',
   },
   statusBadge: {
-    backgroundColor: 'rgba(160, 149, 128, 0.12)',
+    backgroundColor: 'rgba(201, 163, 64, 0.12)',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: 'rgba(160, 149, 128, 0.25)',
+    borderColor: 'rgba(201, 163, 64, 0.25)',
   },
   statusBadgeText: {
-    color: '#A09580',
+    color: '#C9A340',
     fontSize: 12,
     fontWeight: '600',
   },
