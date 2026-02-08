@@ -14,6 +14,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Task } from '../../data/mockTasks';
 import { fetchTaskById, updateTaskStatus } from '../../services/mockApi';
 import ConfettiAnimation from '../../components/ConfettiAnimation';
+import { useTheme, ThemeColors } from '../../services/theme';
 
 const STATUS_COLORS: Record<Task['status'], string> = {
   done: '#4CAF50',
@@ -38,6 +39,7 @@ function formatDate(iso: string): string {
 export default function TaskDetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { colors } = useTheme();
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
@@ -78,9 +80,9 @@ export default function TaskDetailScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top', 'left', 'right']}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#4CAF50" />
+          <ActivityIndicator size="large" color={colors.accent} />
         </View>
       </SafeAreaView>
     );
@@ -88,21 +90,21 @@ export default function TaskDetailScreen() {
 
   if (!task) {
     return (
-      <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top', 'left', 'right']}>
         <View style={styles.header}>
           <TouchableOpacity
             style={styles.headerButton}
             onPress={() => router.back()}
             activeOpacity={0.7}
           >
-            <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+            <Ionicons name="arrow-back" size={24} color={colors.iconColor} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>ЗАВДАННЯ</Text>
+          <Text style={[styles.headerTitle, { color: colors.text }]}>ЗАВДАННЯ</Text>
           <View style={styles.headerButton} />
         </View>
         <View style={styles.loadingContainer}>
-          <MaterialCommunityIcons name="alert-circle-outline" size={48} color="#666666" />
-          <Text style={styles.notFoundText}>Завдання не знайдено</Text>
+          <MaterialCommunityIcons name="alert-circle-outline" size={48} color={colors.textMuted} />
+          <Text style={[styles.notFoundText, { color: colors.textMuted }]}>Завдання не знайдено</Text>
         </View>
       </SafeAreaView>
     );
@@ -111,7 +113,7 @@ export default function TaskDetailScreen() {
   const statusColor = STATUS_COLORS[task.status];
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top', 'left', 'right']}>
       <ConfettiAnimation active={showConfetti} />
       {/* Header */}
       <View style={styles.header}>
@@ -120,9 +122,9 @@ export default function TaskDetailScreen() {
           onPress={() => router.back()}
           activeOpacity={0.7}
         >
-          <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+          <Ionicons name="arrow-back" size={24} color={colors.iconColor} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>ДЕТАЛІ ЗАВДАННЯ</Text>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>ДЕТАЛІ ЗАВДАННЯ</Text>
         <View style={styles.headerButton} />
       </View>
 
@@ -145,55 +147,37 @@ export default function TaskDetailScreen() {
         </View>
 
         {/* Operation name */}
-        <Text style={styles.operationTitle}>{task.operation}</Text>
+        <Text style={[styles.operationTitle, { color: colors.text }]}>{task.operation}</Text>
 
         {/* Description */}
-        <Text style={styles.descriptionText}>{task.description}</Text>
+        <Text style={[styles.descriptionText, { color: colors.textSecondary }]}>{task.description}</Text>
 
         {/* Info cards */}
-        <View style={styles.infoSection}>
-          <InfoRow
-            icon="car-outline"
-            label="Модель"
-            value={task.model}
-          />
-          <InfoRow
-            icon="barcode-outline"
-            label="VIN"
-            value={task.vin}
-          />
+        <View style={[styles.infoSection, { backgroundColor: colors.surface }]}>
+          <InfoRow icon="car-outline" label="Модель" value={task.model} colors={colors} />
+          <InfoRow icon="barcode-outline" label="VIN" value={task.vin} colors={colors} />
           <InfoRow
             icon="person-outline"
             label="Виконавець"
             value={`${task.assignee}${task.teamSize > 0 ? ` +${task.teamSize}` : ''}`}
+            colors={colors}
           />
-          <InfoRow
-            icon="location-outline"
-            label="Пост"
-            value={task.post}
-          />
-          <InfoRow
-            icon="calendar-outline"
-            label="Початок"
-            value={formatDate(task.startDate)}
-          />
-          <InfoRow
-            icon="flag-outline"
-            label="Дедлайн"
-            value={formatDate(task.deadline)}
-          />
+          <InfoRow icon="location-outline" label="Пост" value={task.post} colors={colors} />
+          <InfoRow icon="calendar-outline" label="Початок" value={formatDate(task.startDate)} colors={colors} />
+          <InfoRow icon="flag-outline" label="Дедлайн" value={formatDate(task.deadline)} colors={colors} />
           <InfoRow
             icon="cube-outline"
             label="Матеріали"
             value={task.materialReceived ? 'Отримано' : 'Не отримано'}
             valueColor={task.materialReceived ? '#4CAF50' : '#FF5722'}
+            colors={colors}
           />
         </View>
       </ScrollView>
 
       {/* Bottom action button */}
       {task.status === 'pending' && (
-        <View style={styles.bottomAction}>
+        <View style={[styles.bottomAction, { borderTopColor: colors.surface }]}>
           <TouchableOpacity
             style={[styles.actionButton, styles.startButton]}
             onPress={() => handleStatusUpdate('in_progress')}
@@ -213,7 +197,7 @@ export default function TaskDetailScreen() {
       )}
 
       {task.status === 'in_progress' && (
-        <View style={styles.bottomAction}>
+        <View style={[styles.bottomAction, { borderTopColor: colors.surface }]}>
           <TouchableOpacity
             style={[styles.actionButton, styles.completeButton]}
             onPress={() => handleStatusUpdate('done')}
@@ -233,7 +217,7 @@ export default function TaskDetailScreen() {
       )}
 
       {task.status === 'done' && (
-        <View style={styles.bottomAction}>
+        <View style={[styles.bottomAction, { borderTopColor: colors.surface }]}>
           <View style={[styles.actionButton, styles.doneIndicator]}>
             <Ionicons name="checkmark-done" size={22} color="#4CAF50" />
             <Text style={[styles.actionButtonText, { color: '#4CAF50' }]}>
@@ -251,19 +235,21 @@ function InfoRow({
   label,
   value,
   valueColor,
+  colors,
 }: {
   icon: keyof typeof Ionicons.glyphMap;
   label: string;
   value: string;
   valueColor?: string;
+  colors: ThemeColors;
 }) {
   return (
     <View style={styles.infoRow}>
       <View style={styles.infoLabel}>
-        <Ionicons name={icon} size={18} color="#888888" />
-        <Text style={styles.infoLabelText}>{label}</Text>
+        <Ionicons name={icon} size={18} color={colors.iconSecondary} />
+        <Text style={[styles.infoLabelText, { color: colors.textTertiary }]}>{label}</Text>
       </View>
-      <Text style={[styles.infoValue, valueColor ? { color: valueColor } : undefined]}>
+      <Text style={[styles.infoValue, { color: valueColor || colors.text }]}>
         {value}
       </Text>
     </View>
@@ -273,7 +259,6 @@ function InfoRow({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A0A0A',
   },
   loadingContainer: {
     flex: 1,
@@ -282,7 +267,6 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   notFoundText: {
-    color: '#666666',
     fontSize: 16,
     fontWeight: '500',
   },
@@ -302,7 +286,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   headerTitle: {
-    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '700',
     letterSpacing: 0.5,
@@ -355,7 +338,6 @@ const styles = StyleSheet.create({
 
   // Operation
   operationTitle: {
-    color: '#FFFFFF',
     fontSize: 24,
     fontWeight: '700',
     lineHeight: 30,
@@ -364,7 +346,6 @@ const styles = StyleSheet.create({
 
   // Description
   descriptionText: {
-    color: '#AAAAAA',
     fontSize: 16,
     lineHeight: 22,
     marginBottom: 24,
@@ -372,7 +353,6 @@ const styles = StyleSheet.create({
 
   // Info section
   infoSection: {
-    backgroundColor: '#1A1A1A',
     borderRadius: 14,
     padding: 16,
     gap: 16,
@@ -388,12 +368,10 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   infoLabelText: {
-    color: '#888888',
     fontSize: 14,
     fontWeight: '500',
   },
   infoValue: {
-    color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '600',
     flexShrink: 1,
@@ -407,7 +385,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingBottom: 24,
     borderTopWidth: 1,
-    borderTopColor: '#1A1A1A',
   },
   actionButton: {
     flexDirection: 'row',

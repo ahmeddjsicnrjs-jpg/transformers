@@ -5,11 +5,11 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { TransformersLogo } from '../components/TransformersLogo';
+import { useTheme } from '../services/theme';
 
 interface HomeScreenProps {
   onNavigateToTasks?: () => void;
@@ -21,8 +21,10 @@ export default function HomeScreen({
   onNavigateToTasks,
   onNavigateToProfile,
 }: HomeScreenProps) {
+  const { colors } = useTheme();
+
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top', 'left', 'right']}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
@@ -31,60 +33,56 @@ export default function HomeScreen({
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerLeft}>
-            <TransformersLogo width={32} height={22} color="#FFFFFF" />
+            <TransformersLogo width={32} height={22} color={colors.logoColor} />
           </View>
           <View style={styles.headerRight}>
             <View style={styles.ratingContainer}>
-              <Text style={styles.ratingLabel}>Рейтинг</Text>
-              <Text style={styles.ratingValue}>1250</Text>
+              <Text style={[styles.ratingLabel, { color: colors.textSecondary }]}>Рейтинг</Text>
+              <Text style={[styles.ratingValue, { color: colors.ratingColor }]}>1250</Text>
             </View>
             <TouchableOpacity style={styles.bellButton} activeOpacity={0.7}>
-              <Ionicons name="notifications-outline" size={24} color="#FFFFFF" />
+              <Ionicons name="notifications-outline" size={24} color={colors.iconColor} />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.profileButton}
               activeOpacity={0.7}
               onPress={onNavigateToProfile}
             >
-              <Ionicons name="person-circle-outline" size={28} color="#FFFFFF" />
+              <Ionicons name="person-circle-outline" size={28} color={colors.iconColor} />
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Stats Row */}
         <View style={styles.statsRow}>
-          <View style={styles.statBox}>
-            <Text style={styles.statValue}>4/5</Text>
-            <Text style={styles.statLabel}>ЗАВДАНЬ</Text>
+          <View style={[styles.statBox, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+            <Text style={[styles.statValue, { color: colors.text }]}>4/5</Text>
+            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>ЗАВДАНЬ</Text>
           </View>
         </View>
 
         {/* Tasks Card */}
         <TouchableOpacity
-          style={styles.tasksCard}
+          style={[styles.tasksCard, { backgroundColor: colors.surface }]}
           activeOpacity={0.8}
           onPress={onNavigateToTasks}
         >
           <MaterialCommunityIcons
             name="chart-line-variant"
             size={28}
-            color="#FFFFFF"
+            color={colors.iconColor}
           />
-          <Text style={styles.tasksCardTitle}>Завдання</Text>
-          <Text style={styles.tasksCardLink}>Переглянути список</Text>
+          <Text style={[styles.tasksCardTitle, { color: colors.text }]}>Завдання</Text>
+          <Text style={[styles.tasksCardLink, { color: colors.linkColor }]}>Переглянути список</Text>
         </TouchableOpacity>
       </ScrollView>
-
     </SafeAreaView>
   );
 }
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A0A0A',
   },
   scrollView: {
     flex: 1,
@@ -106,12 +104,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  headerTitle: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '700',
-    letterSpacing: 1.5,
-  },
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -121,12 +113,10 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   ratingLabel: {
-    color: '#AAAAAA',
     fontSize: 12,
     fontWeight: '400',
   },
   ratingValue: {
-    color: '#4CAF50',
     fontSize: 20,
     fontWeight: '800',
   },
@@ -146,21 +136,17 @@ const styles = StyleSheet.create({
   },
   statBox: {
     flex: 1,
-    backgroundColor: '#1A1A1A',
     borderWidth: 1,
-    borderColor: '#333333',
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 16,
     alignItems: 'center',
   },
   statValue: {
-    color: '#FFFFFF',
     fontSize: 18,
     fontWeight: '700',
   },
   statLabel: {
-    color: '#AAAAAA',
     fontSize: 10,
     fontWeight: '600',
     letterSpacing: 0.5,
@@ -169,19 +155,16 @@ const styles = StyleSheet.create({
 
   // Tasks Card
   tasksCard: {
-    backgroundColor: '#1A1A1A',
     borderRadius: 16,
     marginTop: 16,
     padding: 20,
   },
   tasksCardTitle: {
-    color: '#FFFFFF',
     fontSize: 20,
     fontWeight: '700',
     marginTop: 12,
   },
   tasksCardLink: {
-    color: '#4CAF50',
     fontSize: 14,
     fontWeight: '500',
     marginTop: 4,
