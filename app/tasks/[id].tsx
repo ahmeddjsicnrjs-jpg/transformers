@@ -13,6 +13,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Task } from '../../data/mockTasks';
 import { fetchTaskById, updateTaskStatus } from '../../services/mockApi';
+import ConfettiAnimation from '../../components/ConfettiAnimation';
 
 const STATUS_COLORS: Record<Task['status'], string> = {
   done: '#4CAF50',
@@ -40,6 +41,7 @@ export default function TaskDetailScreen() {
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const loadTask = useCallback(async () => {
     if (!id) return;
@@ -62,6 +64,9 @@ export default function TaskDetailScreen() {
       try {
         const updated = await updateTaskStatus(task.id, newStatus);
         setTask(updated);
+        if (newStatus === 'done') {
+          setShowConfetti(true);
+        }
       } catch {
         Alert.alert('Помилка', 'Не вдалося оновити статус завдання');
       } finally {
@@ -107,6 +112,7 @@ export default function TaskDetailScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+      <ConfettiAnimation active={showConfetti} />
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
