@@ -62,14 +62,17 @@ interface Task {
 
 ## UI/UX Guidelines
 
-### Visual Style (Dark Theme)
-- Clean, industrial, modern
-- Primary background: `#0A0A0A` (near-black)
-- Card background: `#1A1A1A`
-- Primary text: `#FFFFFF` (white)
-- Secondary text: `#AAAAAA` (light grey)
-- Borders: `#333333` / `#2A2A2A`
-- Accent colors: `#E3000F` (red for logout/alerts), `#0057B8` (blue for interactive/start actions)
+### Visual Style (Restrained Light Theme)
+- Clean, industrial, modern — restrained approach without bright accent colors
+- Primary background: `#FFFFFF` (white)
+- Card/section background: `#F5F5F5` (light grey)
+- Primary text: `#1A1A1A` (near-black)
+- Secondary text: `#6B6B6B` (mid grey)
+- Borders: `#E0E0E0` / `#EEEEEE`
+- Icons/navigation: `#333333` (dark charcoal)
+- Action buttons: `#333333` (charcoal) — no bright colors
+- Muted accents only: logout `#9B7070`, success `#7A8F7E`, status colors desaturated
+- Theme toggle available (dark mode uses same restrained principle with inverted tones)
 
 ### Key Screens
 
@@ -99,21 +102,21 @@ interface Task {
 - 7 info rows: model, VIN, assignee, post, start date, deadline, materials
 - Full description section
 - Bottom action buttons:
-  - Pending → "Почати" (blue #0057B8)
-  - In Progress → "Завершити" (green #4CAF50)
-  - Done → "Завдання виконано" (disabled)
+  - Pending → "Почати" (charcoal #333333)
+  - In Progress → "Завершити" (charcoal #333333)
+  - Done → "Завдання виконано" (disabled, muted #7A8F7E)
 - Confetti animation on completion
 
 **Profile Screen:**
 - User avatar with online indicator
 - Stats: tasks completed, points
 - Menu items: Personal data, Achievements, Finance, Notifications, Settings (not functional in MVP)
-- Logout button (red #E3000F)
+- Logout button (muted red #9B7070)
 
 ### Accessibility for Factory Use
 - Minimum touch target: 48x48px (all screens use 56px+)
 - Font sizes: headings 20px+, body 16px+, labels 14px+
-- High contrast (white text on dark background)
+- High contrast (dark text on white background)
 - No gestures required — all actions via visible buttons
 
 ## Development Guidelines
@@ -152,10 +155,11 @@ export const userStore = {
 ### Styling Rules
 - Use `StyleSheet.create()` for all styles
 - Factory-friendly UI: large touch targets (min 48px), high contrast, readable fonts (16px+ base)
-- Status colors: `pending` = `#9E9E9E` (grey), `in_progress` = `#FFC107` (yellow/gold), `done` = `#4CAF50` (green)
+- Status colors (muted): `pending` = `#B0B0B0` (grey), `in_progress` = `#A09580` (warm grey), `done` = `#7A8F7E` (sage)
 - Card borders: left border 4px with status color
 - Keep layouts simple: flat lists, cards, minimal nesting
-- Dark background (#0A0A0A), white text, bold headings, clean spacing
+- White background (#FFFFFF), dark text (#1A1A1A), bold headings, clean spacing
+- Restrained palette: no bright accent colors, only desaturated muted tones
 
 ### Navigation Structure
 ```
