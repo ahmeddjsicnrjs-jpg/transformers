@@ -9,51 +9,43 @@ const COLORS = [
   '#8BC34A', '#FF9800', '#3F51B5', '#E91E63',
 ];
 
-const PIECE_COUNT = 50;
+const PIECE_COUNT = 55;
 
 interface PieceConfig {
-  // start near horizontal center, at ~40% screen height
-  originX: number;
-  originY: number;
-  // how far it flies horizontally & vertically at peak
-  burstX: number;
-  peakY: number;
-  // final landing position
+  startX: number;
+  startY: number;
+  // horizontal sway: left-right-left as it falls
+  swayMid1X: number;
+  swayMid2X: number;
   endX: number;
   endY: number;
-  // visuals
   rotation: number;
   size: number;
   isRect: boolean;
   color: string;
-  // timing
   delay: number;
   duration: number;
 }
 
 function buildConfigs(): PieceConfig[] {
-  const cx = SCREEN_WIDTH / 2;
-  const cy = SCREEN_HEIGHT * 0.4;
-
   return Array.from({ length: PIECE_COUNT }, (_, i) => {
-    const angle = Math.random() * Math.PI * 2;
-    const force = 0.3 + Math.random() * 0.7; // 0.3–1.0
-    const spreadX = Math.cos(angle) * SCREEN_WIDTH * 0.55 * force;
-    const spreadY = Math.sin(angle) * SCREEN_HEIGHT * 0.35 * force;
+    const startX = Math.random() * SCREEN_WIDTH;
+    const swayAmount = 30 + Math.random() * 60; // 30–90px sway
+    const swayDir = Math.random() > 0.5 ? 1 : -1;
 
     return {
-      originX: cx + (Math.random() - 0.5) * 30,
-      originY: cy + (Math.random() - 0.5) * 30,
-      burstX: cx + spreadX * 0.6,
-      peakY: cy + spreadY - SCREEN_HEIGHT * 0.15 * force, // upward bias
-      endX: cx + spreadX,
-      endY: SCREEN_HEIGHT + 30, // fall off screen
+      startX,
+      startY: -(20 + Math.random() * 80), // above screen
+      swayMid1X: startX + swayAmount * swayDir,
+      swayMid2X: startX - swayAmount * swayDir * 0.7,
+      endX: startX + (Math.random() - 0.5) * 40,
+      endY: SCREEN_HEIGHT + 30,
       rotation: (Math.random() - 0.5) * 1080,
       size: 5 + Math.random() * 7,
-      isRect: Math.random() > 0.4,
+      isRect: Math.random() > 0.35,
       color: COLORS[i % COLORS.length],
-      delay: Math.floor(Math.random() * 600), // 0–600ms stagger
-      duration: 1800 + Math.random() * 1200, // 1.8–3.0s each
+      delay: Math.floor(Math.random() * 1200), // 0–1.2s stagger for rain effect
+      duration: 2000 + Math.random() * 1500,   // 2.0–3.5s fall
     };
   });
 }
@@ -66,23 +58,20 @@ export default function ConfettiAnimation({ active }: ConfettiAnimationProps) {
   const anims = useRef<Animated.Value[]>([]);
   const configs = useMemo(() => buildConfigs(), []);
 
-  // lazily create Animated.Values
   if (anims.current.length === 0) {
     anims.current = configs.map(() => new Animated.Value(0));
   }
 
   const fire = useCallback(() => {
-    // reset all
     anims.current.forEach(a => a.setValue(0));
 
-    // stagger individual launches
     const animations = anims.current.map((anim, i) =>
       Animated.sequence([
         Animated.delay(configs[i].delay),
         Animated.timing(anim, {
           toValue: 1,
           duration: configs[i].duration,
-          easing: Easing.out(Easing.cubic),
+          easing: Easing.in(Easing.quad), // accelerate like gravity
           useNativeDriver: true,
         }),
       ]),
@@ -104,16 +93,22 @@ export default function ConfettiAnimation({ active }: ConfettiAnimationProps) {
       {configs.map((cfg, i) => {
         const anim = anims.current[i];
 
-        // Parabolic Y: origin → peak (up) → fall off screen
+        // fall straight down with gravity
         const translateY = anim.interpolate({
-          inputRange: [0, 0.3, 1],
-          outputRange: [cfg.originY, cfg.peakY, cfg.endY],
+          inputRange: [0, 1],
+          outputRange: [cfg.startY, cfg.endY],
         });
 
-        // X: origin → burst spread → drift further
+        // sway left-right-left as it falls
         const translateX = anim.interpolate({
-          inputRange: [0, 0.3, 1],
-          outputRange: [cfg.originX, cfg.burstX, cfg.endX],
+          inputRange: [0, 0.25, 0.55, 0.8, 1],
+          outputRange: [
+            cfg.startX,
+            cfg.swayMid1X,
+            cfg.swayMid2X,
+            cfg.swayMid1X * 0.5 + cfg.endX * 0.5,
+            cfg.endX,
+          ],
         });
 
         const rotate = anim.interpolate({
@@ -122,13 +117,13 @@ export default function ConfettiAnimation({ active }: ConfettiAnimationProps) {
         });
 
         const opacity = anim.interpolate({
-          inputRange: [0, 0.05, 0.7, 1],
+          inputRange: [0, 0.03, 0.8, 1],
           outputRange: [0, 1, 1, 0],
         });
 
         const scale = anim.interpolate({
-          inputRange: [0, 0.15, 0.6, 1],
-          outputRange: [0, 1.2, 1, 0.4],
+          inputRange: [0, 0.1, 0.5, 1],
+          outputRange: [0.5, 1, 1, 0.6],
         });
 
         return (
