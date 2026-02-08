@@ -14,12 +14,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { TransformersLogo } from '../components/TransformersLogo';
 import { userStore } from '../services/userStore';
+import { useTheme } from '../services/theme';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const { colors } = useTheme();
 
   useEffect(() => {
     userStore.loadUser().then((savedEmail) => {
@@ -36,7 +38,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -47,8 +49,8 @@ export default function LoginScreen() {
         >
           {/* Logo section */}
           <View style={styles.logoSection}>
-            <TransformersLogo width={120} height={83} color="#FFFFFF" />
-            <Text style={styles.subtitle}>
+            <TransformersLogo width={120} height={83} color={colors.logoColor} />
+            <Text style={[styles.subtitle, { color: colors.subtitleColor }]}>
               Введіть облікові дані співробітника
             </Text>
           </View>
@@ -57,12 +59,12 @@ export default function LoginScreen() {
           <View style={styles.formSection}>
             {/* Email field */}
             <View style={styles.fieldGroup}>
-              <Text style={styles.label}>ID АБО EMAIL</Text>
-              <View style={styles.inputContainer}>
+              <Text style={[styles.label, { color: colors.textSecondary }]}>ID АБО EMAIL</Text>
+              <View style={[styles.inputContainer, { borderBottomColor: colors.border }]}>
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { color: colors.text }]}
                   placeholder="user@transformers.com.ua"
-                  placeholderTextColor="#666666"
+                  placeholderTextColor={colors.textMuted}
                   value={email}
                   onChangeText={setEmail}
                   keyboardType="email-address"
@@ -74,12 +76,12 @@ export default function LoginScreen() {
 
             {/* Password field */}
             <View style={styles.fieldGroup}>
-              <Text style={styles.label}>ПАРОЛЬ</Text>
-              <View style={styles.inputContainer}>
+              <Text style={[styles.label, { color: colors.textSecondary }]}>ПАРОЛЬ</Text>
+              <View style={[styles.inputContainer, { borderBottomColor: colors.border }]}>
                 <TextInput
-                  style={[styles.input, styles.passwordInput]}
+                  style={[styles.input, styles.passwordInput, { color: colors.text }]}
                   placeholder="••••••••"
-                  placeholderTextColor="#666666"
+                  placeholderTextColor={colors.textMuted}
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry={!showPassword}
@@ -93,12 +95,12 @@ export default function LoginScreen() {
                   <Ionicons
                     name={showPassword ? 'eye-off-outline' : 'eye-outline'}
                     size={22}
-                    color="#888888"
+                    color={colors.textTertiary}
                   />
                 </TouchableOpacity>
               </View>
               <TouchableOpacity style={styles.forgotButton}>
-                <Text style={styles.forgotText}>Забули пароль?</Text>
+                <Text style={[styles.forgotText, { color: colors.textTertiary }]}>Забули пароль?</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -108,12 +110,12 @@ export default function LoginScreen() {
 
           {/* Login button */}
           <TouchableOpacity
-            style={styles.loginButton}
+            style={[styles.loginButton, { backgroundColor: colors.buttonBackground }]}
             onPress={handleLogin}
             activeOpacity={0.85}
           >
-            <Text style={styles.loginButtonText}>УВІЙТИ В СИСТЕМУ</Text>
-            <Ionicons name="arrow-forward" size={20} color="#0A0A0A" />
+            <Text style={[styles.loginButtonText, { color: colors.buttonText }]}>УВІЙТИ В СИСТЕМУ</Text>
+            <Ionicons name="arrow-forward" size={20} color={colors.buttonText} />
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -124,7 +126,6 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A0A0A',
   },
   flex: {
     flex: 1,
@@ -141,7 +142,6 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   subtitle: {
-    color: '#6B8AAF',
     fontSize: 16,
     marginTop: 24,
     textAlign: 'center',
@@ -154,7 +154,6 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   label: {
-    color: '#AAAAAA',
     fontSize: 12,
     fontWeight: '600',
     letterSpacing: 1.5,
@@ -163,11 +162,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: '#333333',
   },
   input: {
     flex: 1,
-    color: '#FFFFFF',
     fontSize: 16,
     paddingVertical: 14,
   },
@@ -184,7 +181,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   forgotText: {
-    color: '#888888',
     fontSize: 14,
   },
   // Spacer
@@ -197,14 +193,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
     borderRadius: 30,
     paddingVertical: 18,
     gap: 10,
     minHeight: 60,
   },
   loginButtonText: {
-    color: '#0A0A0A',
     fontSize: 16,
     fontWeight: '700',
     letterSpacing: 1,

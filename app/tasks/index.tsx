@@ -14,6 +14,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Task } from '../../data/mockTasks';
 import { fetchTasks } from '../../services/mockApi';
+import { useTheme, ThemeColors } from '../../services/theme';
 
 const STATUS_COLORS: Record<Task['status'], string> = {
   done: '#4CAF50',
@@ -63,15 +64,17 @@ const statusIconStyles = StyleSheet.create({
 function TaskCard({
   task,
   onPress,
+  colors,
 }: {
   task: Task;
   onPress: (task: Task) => void;
+  colors: ThemeColors;
 }) {
   const borderColor = STATUS_COLORS[task.status];
 
   return (
     <TouchableOpacity
-      style={[styles.card, { borderLeftColor: borderColor }]}
+      style={[styles.card, { borderLeftColor: borderColor, backgroundColor: colors.surface }]}
       activeOpacity={0.7}
       onPress={() => onPress(task)}
     >
@@ -81,7 +84,7 @@ function TaskCard({
           <View style={[styles.orderBadge, { backgroundColor: borderColor }]}>
             <Text style={styles.orderBadgeText}>{task.orderNumber}</Text>
           </View>
-          <Text style={styles.vinText} numberOfLines={1}>
+          <Text style={[styles.vinText, { color: colors.textTertiary }]} numberOfLines={1}>
             {task.vin}
           </Text>
         </View>
@@ -89,27 +92,27 @@ function TaskCard({
       </View>
 
       {/* Operation name */}
-      <Text style={styles.operationText} numberOfLines={2}>
+      <Text style={[styles.operationText, { color: colors.text }]} numberOfLines={2}>
         {task.operation}
       </Text>
 
       {/* Model + Assignee row */}
       <View style={styles.metaRow}>
         <View style={styles.metaItem}>
-          <Ionicons name="car-outline" size={14} color="#888888" />
-          <Text style={styles.metaText}>{task.model}</Text>
+          <Ionicons name="car-outline" size={14} color={colors.iconSecondary} />
+          <Text style={[styles.metaText, { color: colors.textSecondary }]}>{task.model}</Text>
         </View>
         <View style={styles.metaItem}>
-          <Ionicons name="person-outline" size={14} color="#888888" />
-          <Text style={styles.metaText}>
+          <Ionicons name="person-outline" size={14} color={colors.iconSecondary} />
+          <Text style={[styles.metaText, { color: colors.textSecondary }]}>
             {task.assignee} {task.teamSize > 0 ? `+${task.teamSize}` : ''}
           </Text>
         </View>
       </View>
 
       {/* Bottom row: post + status badge */}
-      <View style={styles.cardBottomRow}>
-        <Text style={styles.postText}>{task.post}</Text>
+      <View style={[styles.cardBottomRow, { borderTopColor: colors.borderLight }]}>
+        <Text style={[styles.postText, { color: colors.textMuted }]}>{task.post}</Text>
         {task.status === 'in_progress' && (
           <View style={styles.statusBadge}>
             <Text style={styles.statusBadgeText}>
@@ -124,6 +127,7 @@ function TaskCard({
 
 export default function TasksScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -172,16 +176,16 @@ export default function TasksScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top', 'left', 'right']}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#4CAF50" />
+          <ActivityIndicator size="large" color={colors.accent} />
         </View>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top', 'left', 'right']}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -189,31 +193,31 @@ export default function TasksScreen() {
           onPress={handleBack}
           activeOpacity={0.7}
         >
-          <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+          <Ionicons name="arrow-back" size={24} color={colors.iconColor} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>ВИРОБНИЧИЙ ПЛАН</Text>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>ВИРОБНИЧИЙ ПЛАН</Text>
         <TouchableOpacity
           style={styles.headerButton}
           activeOpacity={0.7}
           onPress={() => router.push('/profile' as any)}
         >
-          <Ionicons name="person-circle-outline" size={28} color="#FFFFFF" />
+          <Ionicons name="person-circle-outline" size={28} color={colors.iconColor} />
         </TouchableOpacity>
       </View>
 
       {/* Search bar */}
       <View style={styles.searchContainer}>
-        <View style={styles.searchInputWrapper}>
+        <View style={[styles.searchInputWrapper, { backgroundColor: colors.inputBackground }]}>
           <Ionicons
             name="search"
             size={18}
-            color="#666666"
+            color={colors.textMuted}
             style={styles.searchIcon}
           />
           <TextInput
-            style={styles.searchInput}
+            style={[styles.searchInput, { color: colors.text }]}
             placeholder="VIN, замовлення або операція..."
-            placeholderTextColor="#666666"
+            placeholderTextColor={colors.textMuted}
             value={searchQuery}
             onChangeText={setSearchQuery}
             autoCapitalize="none"
@@ -225,12 +229,12 @@ export default function TasksScreen() {
               style={styles.clearButton}
               activeOpacity={0.7}
             >
-              <Ionicons name="close-circle" size={18} color="#666666" />
+              <Ionicons name="close-circle" size={18} color={colors.textMuted} />
             </TouchableOpacity>
           )}
         </View>
-        <TouchableOpacity style={styles.filterButton} activeOpacity={0.7}>
-          <Ionicons name="filter-outline" size={22} color="#FFFFFF" />
+        <TouchableOpacity style={[styles.filterButton, { backgroundColor: colors.inputBackground }]} activeOpacity={0.7}>
+          <Ionicons name="filter-outline" size={22} color={colors.iconColor} />
         </TouchableOpacity>
       </View>
 
@@ -239,7 +243,7 @@ export default function TasksScreen() {
         data={filteredTasks}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TaskCard task={item} onPress={handleTaskPress} />
+          <TaskCard task={item} onPress={handleTaskPress} colors={colors} />
         )}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
@@ -247,8 +251,8 @@ export default function TasksScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor="#4CAF50"
-            colors={['#4CAF50']}
+            tintColor={colors.accent}
+            colors={[colors.accent]}
           />
         }
         ListEmptyComponent={
@@ -256,13 +260,12 @@ export default function TasksScreen() {
             <MaterialCommunityIcons
               name="clipboard-text-outline"
               size={48}
-              color="#444444"
+              color={colors.textMuted}
             />
-            <Text style={styles.emptyText}>Завдань не знайдено</Text>
+            <Text style={[styles.emptyText, { color: colors.textMuted }]}>Завдань не знайдено</Text>
           </View>
         }
       />
-
     </SafeAreaView>
   );
 }
@@ -270,7 +273,6 @@ export default function TasksScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A0A0A',
   },
   loadingContainer: {
     flex: 1,
@@ -293,7 +295,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   headerTitle: {
-    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '700',
     letterSpacing: 0.5,
@@ -311,7 +312,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1A1A1A',
     borderRadius: 12,
     paddingHorizontal: 12,
     height: 44,
@@ -321,7 +321,6 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    color: '#FFFFFF',
     fontSize: 14,
     padding: 0,
   },
@@ -336,7 +335,6 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 12,
-    backgroundColor: '#1A1A1A',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -349,7 +347,6 @@ const styles = StyleSheet.create({
 
   // Card
   card: {
-    backgroundColor: '#1A1A1A',
     borderRadius: 14,
     padding: 16,
     marginTop: 12,
@@ -380,7 +377,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   vinText: {
-    color: '#888888',
     fontSize: 11,
     fontWeight: '400',
     flex: 1,
@@ -388,7 +384,6 @@ const styles = StyleSheet.create({
 
   // Operation
   operationText: {
-    color: '#FFFFFF',
     fontSize: 17,
     fontWeight: '700',
     marginBottom: 10,
@@ -408,7 +403,6 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   metaText: {
-    color: '#AAAAAA',
     fontSize: 13,
     fontWeight: '400',
   },
@@ -419,11 +413,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#2A2A2A',
     paddingTop: 10,
   },
   postText: {
-    color: '#666666',
     fontSize: 13,
     fontWeight: '600',
     textTransform: 'lowercase',
@@ -450,9 +442,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   emptyText: {
-    color: '#666666',
     fontSize: 16,
     fontWeight: '500',
   },
-
 });
